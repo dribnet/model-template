@@ -8,4 +8,5 @@ lap
 imageio
 numpy
 tensorflow==2.0.0
+tensorflow-hub==0.8.0
 keras==2.3.1
