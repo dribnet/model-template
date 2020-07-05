@@ -66,14 +66,14 @@ inputs = {
 # outputs data types: https://sdk.runwayml.com/en/latest/data_types.html
 @runway.command(name='generate',
                 inputs=inputs,
-                outputs={ 'image': image(width=512, height=512) },
+                outputs={ 'image': image(width=512, height=512), 'info': text("hello") },
                 description='Generates a red square when the input text input is "red".')
 def generate(model, args):
     print('[GENERATE] Ran with image "{}"'.format(args['image']))
     # Generate a PIL or Numpy image based on the input caption, and return it
     output_image = model.run_on_input(args['image'], args['slices'])
     return {
-        'image': output_image
+        'image': output_image['image'], 'info': output_image['info']
     }
 
 if __name__ == '__main__':

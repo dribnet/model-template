@@ -24,6 +24,7 @@ import random
 from PIL import Image
 import shutil
 import os
+import subprocess
 
 resize_command_template = "convert workspace/input.png \
     -resize $(convert workspace/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
@@ -47,12 +48,16 @@ class ExampleModel():
         tile_percent = "{:2.10f}%".format(100/num_slices)
         tile_command = tile_command_template.format(tile_percent)
         montage_command = montage_command_template.format(num_slices)
-        os.system(resize_command)
-        os.system(tile_command)
-        print("WHAT ABOUT ", montage_command)
-        os.system(montage_command)
-        tile1 = Image.open("workspace/montage.jpg").convert(mode='RGB')
-        return tile1
+        outstr = str(subprocess.check_output(resize_command, shell=True, stderr=subprocess.STDOUT))
+        outstr = outstr + str(subprocess.check_output(tile_command, shell=True, stderr=subprocess.STDOUT))
+        outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
+        outstr = outstr + str(subprocess.check_output("ls workspace", shell=True, stderr=subprocess.STDOUT))
+        # os.system(resize_command)
+        # os.system(tile_command)
+        # print("WHAT ABOUT ", montage_command)
+        # os.system(montage_command)
+        tile1 = Image.open("workspace/input_sized.png").convert(mode='RGB')
+        return {'image': tile1, 'info': outstr}
 
         # This is an example of how you could use some input from
         # @runway.setup(), like options['truncation'], later inside a
