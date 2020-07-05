@@ -79,7 +79,7 @@ def generate(model, args):
 if __name__ == '__main__':
     # run the model server using the default network interface and ports,
     # displayed here for convenience
-    runway.run(host='0.0.0.0', port=8000)
+    runway.run(host='0.0.0.0', port=9000)
 
 ## Now that the model is running, open a new terminal and give it a command to
 ## generate an image. It will respond with a base64 encoded URI

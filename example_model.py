@@ -29,7 +29,7 @@ import subprocess
 resize_command_template = "convert workspace/input.png \
     -resize $(convert workspace/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
     workspace/input_sized.png"
-tile_command_template = "magick workspace/input_sized.png +repage -crop {0} workspace/tile%04d.png"
+tile_command_template = "convert workspace/input_sized.png +repage -crop {0} workspace/tile%04d.png"
 montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/montage.jpg"
 
 class ExampleModel():
@@ -56,7 +56,7 @@ class ExampleModel():
         # os.system(tile_command)
         # print("WHAT ABOUT ", montage_command)
         # os.system(montage_command)
-        tile1 = Image.open("workspace/input_sized.png").convert(mode='RGB')
+        tile1 = Image.open("workspace/montage.jpg").convert(mode='RGB')
         return {'image': tile1, 'info': outstr}
 
         # This is an example of how you could use some input from
