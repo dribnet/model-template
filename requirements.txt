@@ -6,3 +6,6 @@ tqdm
 umap-learn
 lap
 imageio
+numpy
+tensorflow
+keras
