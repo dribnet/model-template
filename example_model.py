@@ -22,6 +22,10 @@
 
 import random
 from PIL import Image
+import shutil
+import os
+
+tile_command = "magick workspace/input.png +repage -crop 30x30 workspace/tile%04d.png"
 
 class ExampleModel():
 
@@ -30,16 +34,25 @@ class ExampleModel():
         self.truncation = options['truncation']
 
     # Generate an image based on some text.
-    def run_on_input(self, caption_text):
+    def run_on_input(self, input_image):
+        print("HERE WE GO")
+        shutil.rmtree('workspace', ignore_errors=True)
+        os.mkdir('workspace')
+        input_image.save("workspace/input.png")
+        os.system(tile_command)
+        tile1 = Image.open("workspace/tile0000.png").convert(mode='RGB')
+        return tile1
 
         # This is an example of how you could use some input from
         # @runway.setup(), like options['truncation'], later inside a
         # function called by @runway.command().
-        text = caption_text[0:self.truncation]
+        # text = caption_text[0:self.truncation]
 
         # Return a red image if the input text is "red",
         # otherwise return a blue image.
-        if text == 'red':
-            return Image.new('RGB', (512, 512), color = 'red')
-        else:
-            return Image.new('RGB', (512, 512), color = 'blue')
+        # if text == 'red':
+        #     return Image.new('RGB', (512, 512), color = 'red')
+        # else:
+        #     return Image.new('RGB', (512, 512), color = 'blue')
+        # return Image.new('RGB', (512, 512), color = 'blue')
+

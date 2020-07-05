@@ -60,13 +60,13 @@ def setup(opts):
 # inputs and process outputs. To see a complete list of supported inputs and
 # outputs data types: https://sdk.runwayml.com/en/latest/data_types.html
 @runway.command(name='generate',
-                inputs={ 'caption': text() },
+                inputs={ 'image': image() },
                 outputs={ 'image': image(width=512, height=512) },
                 description='Generates a red square when the input text input is "red".')
 def generate(model, args):
-    print('[GENERATE] Ran with caption value "{}"'.format(args['caption']))
+    print('[GENERATE] Ran with image "{}"'.format(args['image']))
     # Generate a PIL or Numpy image based on the input caption, and return it
-    output_image = model.run_on_input(args['caption'])
+    output_image = model.run_on_input(args['image'])
     return {
         'image': output_image
     }
@@ -74,7 +74,7 @@ def generate(model, args):
 if __name__ == '__main__':
     # run the model server using the default network interface and ports,
     # displayed here for convenience
-    runway.run(host='0.0.0.0', port=8000)
+    runway.run(host='0.0.0.0', port=9000)
 
 ## Now that the model is running, open a new terminal and give it a command to
 ## generate an image. It will respond with a base64 encoded URI
