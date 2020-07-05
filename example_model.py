@@ -25,7 +25,10 @@ from PIL import Image
 import shutil
 import os
 
-tile_command = "magick workspace/input.png +repage -crop 30x30 workspace/tile%04d.png"
+resize_command_template = "convert input/input.png \
+    -resize $(convert input/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
+    input/input_sized.png"
+tile_command_template = "magick workspace/input.png +repage -crop {0} workspace/tile%04d.png"
 
 class ExampleModel():
 
@@ -34,11 +37,15 @@ class ExampleModel():
         self.truncation = options['truncation']
 
     # Generate an image based on some text.
-    def run_on_input(self, input_image):
+    def run_on_input(self, input_image, num_slices):
         print("HERE WE GO")
         shutil.rmtree('workspace', ignore_errors=True)
         os.mkdir('workspace')
         input_image.save("workspace/input.png")
+        resize_command = resize_command_template.format(num_slices)
+        tile_percent = "{:2.5f}%".format(100/num_slices)
+        tile_command = tile_command_template.format(tile_percent)
+        os.system(resize_command)
         os.system(tile_command)
         tile1 = Image.open("workspace/tile0000.png").convert(mode='RGB')
         return tile1
