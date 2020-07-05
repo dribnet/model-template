@@ -25,12 +25,39 @@ from PIL import Image
 import shutil
 import os
 import subprocess
+from smartgrid import run_grid
 
 resize_command_template = "convert workspace/input.png \
     -resize $(convert workspace/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
     workspace/input_sized.png"
 tile_command_template = "convert workspace/input_sized.png +repage -crop {0} workspace/tile%04d.png"
 montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/montage.jpg"
+
+use_imagemagick = False
+def run_smartgrid(input_glob, output_path):
+    run_grid(input_glob, None, None, 1.0,
+        output_path, 2,
+        30, 150, None, None, None,
+        False, 0, None, False, None,
+        "3+",
+        "color", None, None, False, "grid.jpg", use_imagemagick,
+        0, False, None,
+        None, None,
+        1, False, False,
+        False, False)
+
+
+    # this obviously needs refactoring
+    # run_grid(args.input_glob, args.left_image, args.right_image, args.left_right_scale,
+    #          args.output_path, args.num_dimensions, 
+    #          args.perplexity, args.learning_rate, width, height, args.aspect_ratio,
+    #          args.drop_to_fit, args.fill_shade, args.vectors, args.do_prune, args.clip_range,
+    #          args.subsampling,
+    #          model, layer, args.pooling, args.do_crop, args.grid_file, args.use_imagemagick,
+    #          args.grid_spacing, args.show_links, args.links_max_threshold,
+    #          args.min_distance, args.max_distance,
+    #          args.max_group_size, args.do_reload, args.do_tsne,
+    #          args.do_reduce_hack, args.do_pca)
 
 class ExampleModel():
 
@@ -50,13 +77,15 @@ class ExampleModel():
         montage_command = montage_command_template.format(num_slices)
         outstr = str(subprocess.check_output(resize_command, shell=True, stderr=subprocess.STDOUT))
         outstr = outstr + str(subprocess.check_output(tile_command, shell=True, stderr=subprocess.STDOUT))
-        outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
-        outstr = outstr + str(subprocess.check_output("ls workspace", shell=True, stderr=subprocess.STDOUT))
+
+        run_smartgrid("workspace/tile????.png", "workspace")
+        # outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
+        # outstr = outstr + str(subprocess.check_output("ls workspace", shell=True, stderr=subprocess.STDOUT))
         # os.system(resize_command)
         # os.system(tile_command)
         # print("WHAT ABOUT ", montage_command)
         # os.system(montage_command)
-        tile1 = Image.open("workspace/montage.jpg").convert(mode='RGB')
+        tile1 = Image.open("workspace/grid.jpg").convert(mode='RGB')
         return {'image': tile1, 'info': outstr}
 
         # This is an example of how you could use some input from

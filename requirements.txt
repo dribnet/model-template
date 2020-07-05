@@ -1,2 +1,8 @@
 runway-python
 Pillow==6.2.0
+scikit-learn
+scikit-image
+tqdm
+umap-learn
+lap
+imageio
