@@ -37,7 +37,7 @@
 # Import the Runway SDK. Please install it first with
 # `pip install runway-python`.
 import runway
-from runway.data_types import number, text, image
+from runway.data_types import number, text, image, category
 from example_model import ExampleModel
 
 # Setup the model, initialize weights, set the configs of the model, etc.
@@ -58,6 +58,7 @@ def setup(opts):
 
 inputs = {
     'image': image(),
+    'model': category(choices=["color", "bit/m-r101x1", "vgg16"], default="color", description='Cluster model.'),
     'slices': number(min=5, max=30, step=5, default=10, description='Number of slices.'),
 }
 
@@ -71,7 +72,7 @@ inputs = {
 def generate(model, args):
     print('[GENERATE] Ran with image "{}"'.format(args['image']))
     # Generate a PIL or Numpy image based on the input caption, and return it
-    output_image = model.run_on_input(args['image'], args['slices'])
+    output_image = model.run_on_input(args['image'], args['slices'], args['model'])
     return {
         'image': output_image['image'], 'info': output_image['info']
     }

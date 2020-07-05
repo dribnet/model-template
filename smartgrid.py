@@ -1016,6 +1016,7 @@ def main():
       tf.random.set_seed(args.random_seed)
 
     width, height = None, None
+
     if args.tile is not None:
         width, height = map(int, args.tile.split("x"))
     if args.model is None and args.layer is None:

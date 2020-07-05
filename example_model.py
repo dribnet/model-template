@@ -34,13 +34,13 @@ tile_command_template = "convert workspace/input_sized.png +repage -crop {0} wor
 montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/montage.jpg"
 
 use_imagemagick = False
-def run_smartgrid(input_glob, output_path):
+def run_smartgrid(input_glob, output_path, model):
     run_grid(input_glob, None, None, 1.0,
         output_path, 2,
         30, 150, None, None, None,
         False, 0, None, False, None,
         "3+",
-        "color", None, None, False, "grid.jpg", use_imagemagick,
+        model, None, None, False, "grid.jpg", use_imagemagick,
         0, False, None,
         None, None,
         1, False, False,
@@ -66,7 +66,7 @@ class ExampleModel():
         self.truncation = options['truncation']
 
     # Generate an image based on some text.
-    def run_on_input(self, input_image, num_slices):
+    def run_on_input(self, input_image, num_slices, model):
         print("HERE WE GO")
         shutil.rmtree('workspace', ignore_errors=True)
         os.mkdir('workspace')
@@ -78,7 +78,7 @@ class ExampleModel():
         outstr = str(subprocess.check_output(resize_command, shell=True, stderr=subprocess.STDOUT))
         outstr = outstr + str(subprocess.check_output(tile_command, shell=True, stderr=subprocess.STDOUT))
 
-        run_smartgrid("workspace/tile????.png", "workspace")
+        run_smartgrid("workspace/tile????.png", "workspace", model)
         # outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
         # outstr = outstr + str(subprocess.check_output("ls workspace", shell=True, stderr=subprocess.STDOUT))
         # os.system(resize_command)
