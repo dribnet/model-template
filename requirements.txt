@@ -5,6 +5,7 @@ scikit-image
 tqdm
 umap-learn
 lap
+braceexpand
 imageio
 numpy
 tensorflow==2.0.0
