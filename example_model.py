@@ -25,10 +25,11 @@ from PIL import Image
 import shutil
 import os
 
-resize_command_template = "convert input/input.png \
-    -resize $(convert input/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
-    input/input_sized.png"
-tile_command_template = "magick workspace/input.png +repage -crop {0} workspace/tile%04d.png"
+resize_command_template = "convert workspace/input.png \
+    -resize $(convert workspace/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
+    workspace/input_sized.png"
+tile_command_template = "magick workspace/input_sized.png +repage -crop {0} workspace/tile%04d.png"
+montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/montage.jpg"
 
 class ExampleModel():
 
@@ -43,11 +44,14 @@ class ExampleModel():
         os.mkdir('workspace')
         input_image.save("workspace/input.png")
         resize_command = resize_command_template.format(num_slices)
-        tile_percent = "{:2.5f}%".format(100/num_slices)
+        tile_percent = "{:2.10f}%".format(100/num_slices)
         tile_command = tile_command_template.format(tile_percent)
+        montage_command = montage_command_template.format(num_slices)
         os.system(resize_command)
         os.system(tile_command)
-        tile1 = Image.open("workspace/tile0000.png").convert(mode='RGB')
+        print("WHAT ABOUT ", montage_command)
+        os.system(montage_command)
+        tile1 = Image.open("workspace/montage.jpg").convert(mode='RGB')
         return tile1
 
         # This is an example of how you could use some input from
