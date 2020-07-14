@@ -57,8 +57,9 @@ def setup(opts):
     return model
 
 inputs = {
+    # 'file': file(extension=".zip"),
     'image': image(),
-    'model': category(choices=["color", "bit/m-r101x1", "vgg16"], default="color", description='Cluster model.'),
+    'model': category(choices=["none", "color", "bit/m-r101x1", "vgg16"], default="color", description='Cluster model.'),
     'slices': number(min=5, max=30, step=5, default=10, description='Number of slices.'),
 }
 

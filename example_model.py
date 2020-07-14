@@ -31,7 +31,7 @@ resize_command_template = "convert workspace/input.png \
     -resize $(convert workspace/input.png -format '%[fx:{0}*int((w+1)/{0})]x%[fx:{0}*int((h+1)/{0})]!' info:) \
     workspace/input_sized.png"
 tile_command_template = "convert workspace/input_sized.png +repage -crop {0} workspace/tile%04d.png"
-montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/montage.jpg"
+montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/grid.jpg"
 
 use_imagemagick = False
 def run_smartgrid(input_glob, output_path, model):
@@ -78,7 +78,10 @@ class ExampleModel():
         outstr = str(subprocess.check_output(resize_command, shell=True, stderr=subprocess.STDOUT))
         outstr = outstr + str(subprocess.check_output(tile_command, shell=True, stderr=subprocess.STDOUT))
 
-        run_smartgrid("workspace/tile????.png", "workspace", model)
+        if model == "none":
+            os.system(montage_command)
+        else:
+            run_smartgrid("workspace/tile????.png", "workspace", model)
         # outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
         # outstr = outstr + str(subprocess.check_output("ls workspace", shell=True, stderr=subprocess.STDOUT))
         # os.system(resize_command)
