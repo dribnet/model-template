@@ -260,6 +260,15 @@ def analyze_images_colors(images, colorspace='rgb', subsampling=None):
     # colors = normalize_columns(colors)
     return colors
 
+def analyze_random(images):
+    # analyze images and grab activations
+    vectors = []
+    for image_path in images:
+        v = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
+        # print(image_path, c)
+        vectors.append(v)
+    return vectors
+
 def bit_preprocess_image(image):
     image = np.array(image)
     # reshape into shape [batch_size, height, width, num_channels]
@@ -269,6 +278,8 @@ def bit_preprocess_image(image):
     return image
 
 def analyze_images(images, model_name, layer_name=None, pooling=None, do_crop=False, subsampling=None, do_pca=False):
+    if model_name == 'random':
+        return analyze_random(images)
     if model_name == 'color' or model_name == 'color_lab':
         return analyze_images_colors(images, colorspace='lab', subsampling=subsampling)
     elif model_name == 'color_rgb':

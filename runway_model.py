@@ -59,8 +59,9 @@ def setup(opts):
 inputs = {
     # 'file': file(extension=".zip"),
     'image': image(),
-    'model': category(choices=["none", "color", "bit/m-r101x1", "vgg16"], default="color", description='Cluster model.'),
+    'model': category(choices=["none", "random", "color", "bit/m-r101x1", "vgg16"], default="color", description='Cluster model.'),
     'slices': number(min=5, max=30, step=5, default=10, description='Number of slices.'),
+    'vgg_depth': number(min=1, max=8, step=1, default=7, description='VGG Feature Depth'),
 }
 
 # Every model needs to have at least one command. Every command allows to send
@@ -73,7 +74,7 @@ inputs = {
 def generate(model, args):
     print('[GENERATE] Ran with image "{}"'.format(args['image']))
     # Generate a PIL or Numpy image based on the input caption, and return it
-    output_image = model.run_on_input(args['image'], args['slices'], args['model'])
+    output_image = model.run_on_input(args['image'], args['slices'], args['model'], args['vgg_depth'])
     return {
         'image': output_image['image'], 'info': output_image['info']
     }

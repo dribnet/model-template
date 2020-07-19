@@ -34,13 +34,13 @@ tile_command_template = "convert workspace/input_sized.png +repage -crop {0} wor
 montage_command_template = "montage workspace/tile????.png -geometry +2+2 -tile {0}x{0} workspace/grid.jpg"
 
 use_imagemagick = False
-def run_smartgrid(input_glob, output_path, model):
+def run_smartgrid(input_glob, output_path, model, layer=None):
     run_grid(input_glob, None, None, 1.0,
         output_path, 2,
         30, 150, None, None, None,
         False, 0, None, False, None,
         "3+",
-        model, None, None, False, "grid.jpg", use_imagemagick,
+        model, layer, None, False, "grid.jpg", use_imagemagick,
         0, False, None,
         None, None,
         1, False, False,
@@ -59,6 +59,17 @@ def run_smartgrid(input_glob, output_path, model):
     #          args.max_group_size, args.do_reload, args.do_tsne,
     #          args.do_reduce_hack, args.do_pca)
 
+vgg_depth_names = [
+    "block1_pool",
+    "block2_pool",
+    "block3_pool",
+    "block4_pool",
+    "block5_pool",
+    "fc1",
+    "fc2",
+    "predictions",
+]
+
 class ExampleModel():
 
     def __init__(self, options):
@@ -66,7 +77,7 @@ class ExampleModel():
         self.truncation = options['truncation']
 
     # Generate an image based on some text.
-    def run_on_input(self, input_image, num_slices, model):
+    def run_on_input(self, input_image, num_slices, model, vgg_depth):
         print("HERE WE GO")
         shutil.rmtree('workspace', ignore_errors=True)
         os.mkdir('workspace')
@@ -80,6 +91,8 @@ class ExampleModel():
 
         if model == "none":
             os.system(montage_command)
+        elif model == "vgg16":
+            run_smartgrid("workspace/tile????.png", "workspace", model, vgg_depth_names[vgg_depth-1])
         else:
             run_smartgrid("workspace/tile????.png", "workspace", model)
         # outstr = outstr + str(subprocess.check_output(montage_command, shell=True, stderr=subprocess.STDOUT))
